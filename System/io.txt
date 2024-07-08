@@ -1,0 +1,2 @@
+child process write data!
+parent process write data!
