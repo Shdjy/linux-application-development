@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
    if (cpid == 0)
    {
     /* code */
-        close(pipefd[1]);
+        close(pipefd[1]);//1-write
         char str[100] = {0};
         sprintf(str, "child process%d\n", getpid());
         write(STDOUT_FILENO, str, sizeof(str));
