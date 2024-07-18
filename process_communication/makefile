@@ -1,6 +1,6 @@
 CC:=gcc
 
-.PHONY: named_fifo named_fifo_clean
+.PHONY: named_fifo named_fifo_clean p_c_mq p_c_mq_clean
 
 unnamed_pipe : unnamed_pipe.c
 	-$(CC) -o $@ $<
@@ -26,4 +26,15 @@ shared_memory: shared_memory.c
 mqueue: mqueue.c
 	-$(CC) -o $@ $^
 	-./$@
-	-rm ./$@
+	o-rm ./$@
+
+mqueue_producer: mqueue_producer.c
+	-$(CC) -o $@ $^
+
+mqueue_consumer: mqueue_consumer.c
+	-$(CC) -o $@ $^
+
+p_c_mq: mqueue_producer mqueue_consumer
+
+p_c_mq_clean:
+	-rm ./mqueue_producer ./mqueue_consumer
