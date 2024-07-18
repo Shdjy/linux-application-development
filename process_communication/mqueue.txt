@@ -1,0 +1,83 @@
+//消息队列属性信息
+struct mq_attr
+{
+	log mq_flags;//标记，对于mq_open，忽略它，因为这个标记是通过前者的调用传递的
+	long mq_maxmsg;//消息队列的最大容量
+	long mq_msgsize;//单挑消息的大小
+	long mq_curmsgs;//当前队列中消息数量
+};
+
+//时间结构体
+struct timespec
+{
+	time_t tv_sec;//秒
+	long tv_nsec;//纳秒
+};
+
+#include <fcntl.h>    /* For O_* constants */
+#include <sys/stat.h> /* For mode constants */
+#include <mqueue.h>
+
+/**
+ * @brief 创建或打开一个已存在的POSIX消息队列，消息队列是通过名称唯一标识的。
+ *
+ * @param name 消息队列的名称
+ * 命名规则：必须是以正斜杠/开头，以\0结尾的字符串，中间可以包含若干字符，但不能有正斜杠
+ * @param oflag 指定消息队列的控制权限，必须也只能包含以下三者之一
+ * O_RDONLY 打开的消息队列只用于接收消息
+ * O_WRONLY 打开的消息队列只用于发送消息
+ * O_RDWR 打开的消息队列可以用于收发消息
+ * 可以与以下选项中的0至多个或操作之后作为oflag
+ * O_CLOEXEC 设置close-on-exec标记，这个标记表示执行exec时关闭文件描述符
+ * O_CREAT 当文件描述符不存在时创建它，如果指定了这一标记，需要额外提供mode和attr参数
+ * O_EXCL 创建一个当前进程独占的消息队列，要同时指定O_CREAT，要求创建的消息队列不存在，否则将会失败，并提示错误EEXIST
+ * O_NONBLOCK 以非阻塞模式打开消息队列，如果设置了这个选项，在默认情况下收发消息发生阻塞时，会转而失败，并提示错误EAGAIN
+ * @param mode 每个消息队列在mqueue文件系统对应一个文件，mode是用来指定消息队列对应文件的权限的
+ * @param attr 属性信息，如果为NULL，则队列以默认属性创建
+
+* @return mqd_t 成功则返回消息队列描述符，失败则返回(mqd_t)-1，同时设置errno以指明错误原因
+*/
+mqd_t mq_open(const char *name, int oflag, mode_t mode, struct mq_attr *attr);
+
+/**
+ * @brief 当oflag没有包含O_CREAT时方可调用
+ *
+ * @param name 同上
+ * @param oflag 同上
+ * @return mqd_t 同上
+ */
+mqd_t mq_open(const char *name, int oflag);
+
+
+#include <time.h>
+#include <mqueue.h>
+
+/**
+ * @brief 将msg_ptr指向的消息追加到消息队列描述符mqdes指向的消息队列的尾部。如果消息队列已满，默认情况下，调用阻塞直至有充足的空间允许新的消息入队，或者达到abs_timeout指定的等待时间节点，或者调用被信号处理函数打断。需要注意的是，正如上文提到的，如果在mq_open时指定了O_NONBLOCK标记，则转而失败，并返回错误EAGAIN。
+ * 
+ * @param mqdes 消息队列描述符
+ * @param msg_ptr 指向消息的指针
+ * @param msg_len msg_ptr指向的消息长度，不能超过队列的mq_msgsize属性指定的队列最大容量，长度为0的消息是被允许的
+ * @param msg_prio 一个非负整数，指定了消息的优先级，消息队列中的数据是按照优先级降序排列的，如果新旧消息的优先级相同，则新的消息排在后面。
+ * @param abs_timeout 指向struct timespec类型的对象，指定了阻塞等待的最晚时间。如果消息队列已满，且abs_timeout指定的时间节点已过期，则调用立即返回。
+ * @return int 成功返回0，失败返回-1，同时设置errno以指明错误原因。
+ */
+int mq_timedsend(mqd_t mqdes, const char *msg_ptr, size_t msg_len, unsigned int msg_prio, const struct timespec *abs_timeout);
+
+
+
+
+#include <time.h>
+#include <mqueue.h>
+
+/**
+ * @brief 从消息队列中取走最早入队且权限最高的消息，将其放入msg_ptr指向的缓存中。如果消息队列为空，默认情况下调用阻塞，此时的行为与mq_timedsend同理。
+ * 
+ * @param mqdes 消息队列描述符
+ * @param msg_ptr 接收消息的缓存
+ * @param msg_len msg_ptr指向的缓存区的大小，必须大于等于mq_msgsize属性指定的队列单条消息最大字节数
+ * @param msg_prio 如果不为NULL，则用于接收接收到的消息的优先级 
+ * @param abs_timeout 阻塞时等待的最晚时间节点，同mq_timedsend
+ * @return ssize_t 成功则返回接收到的消息的字节数，失败返回-1，并设置errno指明错误原因
+ */
+ssize_t mq_timedreceive(mqd_t mqdes, char *msg_ptr, size_t msg_len, unsigned int *msg_prio, const struct timespec *abs_timeout);

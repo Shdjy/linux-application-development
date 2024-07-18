@@ -22,3 +22,8 @@ shared_memory: shared_memory.c
 	-$(CC) -o $@ $<
 	-./$@
 	-rm ./$@
+
+mqueue: mqueue.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
