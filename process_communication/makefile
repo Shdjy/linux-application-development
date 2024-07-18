@@ -38,3 +38,8 @@ p_c_mq: mqueue_producer mqueue_consumer
 
 p_c_mq_clean:
 	-rm ./mqueue_producer ./mqueue_consumer
+
+signal: signal.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@

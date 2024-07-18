@@ -1,0 +1,13 @@
+#include <signal.h>
+
+// 信号处理函数声明
+typedef void (*sighandler_t)(int);
+
+/**
+ *  signal系统调用会注册某一信号对应的处理函数。如果注册成功，当进程收到这一信号时，将不会调用默认的处理函数，而是调用这里的自定义函数
+ * 
+ * int signum: 要处理的信号
+ * sighandler_t handler: 当收到对应的signum信号时，要调用的函数
+ * return: sighandler_t 返回之前的信号处理函数，如果错误会返回SEG_ERR
+ */
+sighandler_t signal(int signum, sighandler_t handler);
