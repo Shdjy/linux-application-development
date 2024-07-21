@@ -16,4 +16,12 @@ pthread_detach: pthread_detach.c
 	-./$@
 	-rm ./$@
 
+race_condition_test: race_condition_test.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
 
+mutex_test: mutex_test.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
