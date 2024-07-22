@@ -1,3 +1,4 @@
+//写操作不加锁测试
 #include <stdio.h>
 #include <unistd.h>
 #include <pthread.h>
