@@ -25,3 +25,54 @@ mutex_test: mutex_test.c
 	-$(CC) -o $@ $^
 	-./$@
 	-rm ./$@
+
+rwlock_writer_unlock: rwlock_writer_unlock.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
+
+rwlock_test: rwlock_test.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
+
+
+rwlock_rw_alternate: rwlock_rw_alternate.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
+
+rwlock_write_hungry: rwlock_write_hungry.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
+	
+rwlock_hungry_solveds: rwlock_hungry_solveds.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
+
+condition_var: condition_var.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
+
+unnamed_sem_bin_thread_condition: unnamed_sem_bin_thread_condition.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
+
+unnamed_sem_bin_thread: unnamed_sem_bin_thread.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
+	
+unnamed_sem_bin_process_condition: unnamed_sem_bin_process_condition.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
+
+unnamed_sem_bin_process: unnamed_sem_bin_process.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
