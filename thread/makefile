@@ -76,3 +76,8 @@ unnamed_sem_bin_process: unnamed_sem_bin_process.c
 	-$(CC) -o $@ $^
 	-./$@
 	-rm ./$@
+
+unnamed_sem_count_thread: unnamed_sem_count_thread.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
