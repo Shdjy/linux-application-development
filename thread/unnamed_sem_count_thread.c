@@ -62,5 +62,8 @@ int main()
 
 	sem_destroy(full);
 	sem_destroy(empty);
+
+	free(full);
+	free(empty);
 	return 0;
 }
