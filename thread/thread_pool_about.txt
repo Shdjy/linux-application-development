@@ -1,0 +1,87 @@
+相关数据类型
+1）GFunc
+// 此处的 data 是在启动任务时，传递给每个任务的，而 user_data 是在创建线程池时传入的共享数据，对于每个任务都是一样的
+typedef void (*GFunc)(gpointer data, gpointer user_data);
+2）gpointer
+typedef void *gpointer;
+3）gint
+typedef int gint;
+4）gboolean
+typedef gint gboolean;
+#define TRUE               1
+#define FALSE              0
+5）Gerror
+/**
+ * @brief 记录已发生的错误信息
+ * domain: 表示错误的域（或命名空间）。GQuark 是一个无符号整数，用于唯一标识一个字符串。它通常用来区分不同的错误类别，例如文件操作错误、网络错误等。
+ * code: 表示错误的代码。这是一个整型值，用于具体描述错误。每个域中的错误代码应该是唯一的，并且通常有一组预定义的错误代码。
+ * gchar: 表示错误消息。gchar 是 char 的别名，用于在 GLib 中统一字符类型。message 是一个字符串指针，包含了详细的错误描述信息。
+ */
+struct GError {
+    GQuark domain;
+    gint code;
+    gchar *message;
+}
+6）GThreadPool
+/**
+ * @brief 线程池对象
+ * func：线程池中执行的任务
+ * user_data：线程池中共享的用户数据指针，会在每个任务函数调用时传递给任务函数。
+ * exclusive：标记当前线程池是否独占线程
+ */
+struct GThreadPool {
+    GFunc func;
+    gpointer user_data;
+    gboolean exclusive;
+}
+4.4.5相关函数
+1）g_thread_pool_new
+/**
+ * @brief 创建新的线程池
+ *
+ * @param func 池中线程执行的函数
+ * @param user_data 传递给func的数据，可以为NULL，这里的user_data最终会被存储在GThreadPool结构体的user_data属性中
+ * @param max_threads 线程池容量，即当前线程池中可以同时运行的线程数。-1表示没有限制
+ * @param exclusive 独占标记位。决定当前的线程池独占所有的线程还是与其它线程池共享这些线程。取值可以是TRUE或FALSE
+ *  TRUE：立即启动数量为max_threads的线程，且启动的线程只能被当前线程池使用
+ *  FALSE：只有在需要时，即需要执行任务时才创建线程，且线程可以被多个非独享资源的线程池共用
+ * @param error 用于报告错误信息，可以是NULL，表示忽略错误
+ * @return GThreadPool* 线程池实例指针。无论是否发生错误，都会返回有效的线程池
+ */
+GThreadPool *g_thread_pool_new(
+    GFunc func,
+    gpointer user_data,
+    gint max_threads,
+    gboolean exclusive,
+    GError **error);
+2）g_thread_pool_push
+/**
+ * @brief 向pool指向的线程池实例添加数据，这一行为实际上会向任务队列添加新的任务。当存在可用线程时任务立即执行，否则任务数据会一直待在队列中，直至腾出可用线程执行任务
+ * 
+ * @param pool 指向线程池实例的指针
+ * @param data 传递给每个任务的独享数据
+ * @param error 错误信息
+ * @return gboolean 成功返回TRUE，失败返回FALSE
+ */
+gboolean g_thread_pool_push(
+    GThreadPool *pool,
+    gpointer data,
+    GError **error);
+3）g_thread_pool_free
+/**
+ * @brief 释放为pool指向的线程池分配的所有资源
+ * 
+ * @param pool 线程池指针
+ * @param immediate 是否立即释放线程池
+ *  TRUE：立即释放所有资源，未处理的数据不被处理
+ *  FALSE：在最后一个任务执行完毕之前，线程池不会被释放
+ *  需要注意的是：执行任务时，线程池的任何一个线程都不会被打断。无论这个参数是何取值，都可以保证至少线程池释放前正在运行的线程可以完成它们的任务。
+ * @param wait_ 当前函数是否阻塞等待所有任务完成
+ *  TRUE：所有需要处理的任务执行完毕当前函数才会返回
+ *  FALSE：当前函数立即返回
+ */
+void g_thread_pool_free (
+  GThreadPool* pool,
+  gboolean immediate,
+  gboolean wait_
+);
