@@ -81,3 +81,23 @@ unnamed_sem_count_thread: unnamed_sem_count_thread.c
 	-$(CC) -o $@ $^
 	-./$@
 	-rm ./$@
+
+unnamed_sem_count_process:unnamed_sem_count_process.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
+
+named_sem_bin: named_sem_bin.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
+
+named_sem_count: named_sem_count.c
+	-$(CC) -o $@ $^
+	-./$@
+	-rm ./$@
+
+thread_pool: thread_pool.c
+	-$(CC) -o $@ $^ `pkg-config --cflags --libs glib-2.0`
+	-./$@
+	-rm ./$@
