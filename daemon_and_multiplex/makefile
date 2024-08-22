@@ -15,3 +15,8 @@ daemon_test: daemon_test.c tcp_server
 	-$(CC) -o $@ $<
 	-./$@
 	-rm ./$@
+
+epoll_test: epoll_test.c
+	-$(CC) -o $@ $<
+	-./$@
+	-rm ./$@
