@@ -1,0 +1,106 @@
+
+编译c++    
+编译hello.cpp     g++ -o hello hello.cpp   生成hello可执行文件
+C语言 ,hello.c        gcc hello.c -o hello      生成hello可执行文件
+
+链接
+
+
+调试用gdb	gdb 可执行文件
+
+	设置断点     break 行号  =  b 行号
+	运行            run = r  //运行到断点的位置
+	推出              quit
+	执行当前语句		next = n
+	显示变量	，显示变量的值			print = p
+	继续运行程序知道遇到下一个断点		continue = c
+	设置变量的值  				set var i = 1
+	执行当前语句，若为函数进入函数		step = s	
+	设置主程序的参数(如果有空格等特殊字符用双引号包含)			 						set args 
+
+	调试父进程		set follow-fork-mode 
+	调试子进程		set follow-fork-mode child
+
+	调试进程的时候其他进程 	set detach-on-fork on/off
+	查看调试进程		info inferiors
+	切换当前调试的进程	inferior 进程id
+
+
+命令名称	命令缩写	命令说明
+run	r	运行一个待调试的程序
+continue	c	让暂停的程序继续运行
+next	n	运行到下一行
+step	s	单步执行，遇到函数会进入
+until	u	运行到指定行停下来
+finish	fi	结束当前调用函数，回到上一层调用函数处
+return	return	结束当前调用函数并返回指定值，到上一层函数调用处
+jump	j	将当前程序执行流跳转到指定行或地址
+print	p	打印变量或寄存器值
+backtrace	bt	查看当前线程的调用堆栈
+frame	f	切换到当前调用线程的指定堆栈
+thread	thread	切换到指定线程
+break	b（行号/函数名）	添加断点
+tbreak	tb	添加临时断点
+delete	d	删除断点
+enable	enable	启用某个断点
+disable	disable	禁用某个断点
+watch	watch	监视某一个变量或内存地址的值是否发生变化
+list	l（行号/函数名）	显示源码一次十行
+info	i	查看断点 / 线程等信息
+ptype	ptype	查看变量类型
+disassemble	dis	查看汇编代码
+set args	set args	设置程序启动命令行参数
+show args	show args	查看设置的命令行参数
+bt    看到底层函数的调用过程
+
+netstat
+
+生成指定进程的dump          gcore pid
+获取进程号                         ps -ef | grep 进程名
+获取线程pid                       ps -T -P pid
+
+
+Linux命令
+cd - 在两个目录之间切换
+ll 打印目录文件以及详细信息
+ls -a 显示全部文件包括隐藏的
+
+pwd  打印当前所处目录\
+rm  删除     -lf
+mdkir 创建目录		-p创建多层目录
+
+cp 拷贝文件 得到文件    -r拷贝目录
+
+
+tuoch
+mv  原名  改名    还可以移动
+
+#chmod
+# 语法格式: chmod who [+|-|=] mod 文件名
+	- who:
+		- u: user  -> 文件所有者
+		- g: group -> 文件所属组用户
+		- o: other -> 其他
+		- a: all, 以上是三类人 u+g+o
+	- 对权限的操作:
+		+: 添加权限
+		-: 去除权限
+		=: 权限的覆盖
+	- mod: 权限
+		r: read, 读
+		w: write, 写
+		x: execute, 执行
+		-: 没有权限
+		
+# 将文件所有者权限设置为读和执行, 也就是权限覆盖
+robin@OS:~/Linux$ chmod u=rx b.txt 
+
+# 语法1-只修改所有者: 
+$ sudo chown 新的所有者 文件名
+
+# 语法2-同时修改所有者和所属组: 
+$ sudo chown 新的所有者:新的组名 文件名
+
+tree命令
+
+
